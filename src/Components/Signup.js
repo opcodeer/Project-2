@@ -9,12 +9,12 @@ const Signup = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const navigate = useNavigate();
-
+    const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
     useEffect(() => {
         const start = async () => {
             try {
                 await gapi.client.init({
-                    clientId: "140083932391-4846kjcp9bhv4ctbfto324cr4d8tnv53.apps.googleusercontent.com",
+                    clientId: googleClientId,
                     scope: 'email',
                 });
             } catch (error) {
@@ -22,7 +22,7 @@ const Signup = () => {
             }
         };
         gapi.load('client:auth2', start);
-    }, []);
+    }, [googleClientId]); // Ensure useEffect runs when googleClientId changes
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -107,7 +107,7 @@ const Signup = () => {
             </form>
             <div className="mt-3">
                 <GoogleLogin
-                    clientId="140083932391-4846kjcp9bhv4ctbfto324cr4d8tnv53.apps.googleusercontent.com"
+                    clientId={googleClientId}
                     onSuccess={VerifySuccess}
                     onFailure={googleFailure}
                     cookiePolicy={'single_host_origin'}
