@@ -19,7 +19,7 @@ const Login = () => {
 
             if (response.ok && json.success && json.authtoken) {
                 localStorage.setItem('token', json.authtoken);
-                navigate("/");
+                navigate("/h");
             } else {
                 alert('Invalid Credentials');
             }
@@ -35,14 +35,14 @@ const Login = () => {
 
     return (
         <div className="container my-3">
-            <h2 className="my-3">Login to continue to iNotebook</h2>
+            <h2 className="my-3 text-light">Login to continue to NoteHub</h2>
             <form onSubmit={handleSubmit}>
                 <div className="mb-3">
-                    <label htmlFor="email" className="form-label">Email address</label>
+                    <label htmlFor="email" className="form-label text-light">Email address</label>
                     <input type="email" className="form-control" value={credentials.email} onChange={onChange} id="email" name="email" aria-describedby="emailHelp" required />
                 </div>
                 <div className="mb-3">
-                    <label htmlFor="password" className="form-label">Password</label>
+                    <label htmlFor="password" className="form-label text-light">Password</label>
                     <input type="password" className="form-control" value={credentials.password} onChange={onChange} name="password" id="password" required />
                 </div>
                 <button type="submit" className="btn btn-primary">Submit</button>

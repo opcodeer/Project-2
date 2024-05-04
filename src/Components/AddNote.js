@@ -3,7 +3,6 @@ import noteContext from "../Context/noteContext";
 
 const AddNote = () => {
     const { addNote } = useContext(noteContext);
-
     const [note, setNote] = useState({ title: "", description: "", tag: "" });
 
     const handleClick = (e) => {
@@ -25,22 +24,29 @@ const AddNote = () => {
     };
 
     return (
-        <div className="container my-3">
-            <h2>Add a Note</h2>
+        <div className="container my-2">
+            <h2 className='text-light'>Add a Note</h2>
             <form className="my-3">
                 <div className="mb-3">
-                    <label htmlFor="title" className="form-label">Title</label>
+                    <label htmlFor="title" className="form-label text-light">Title</label>
                     <input type="text" className="form-control" id="title" name="title" value={note.title} onChange={onChange} minLength={5} required />
                 </div>
                 <div className="mb-3">
-                    <label htmlFor="description" className="form-label">Description</label>
-                    <input type="text" className="form-control" id="description" name="description" value={note.description} onChange={onChange} minLength={5} required />
+                    <label htmlFor="description" className="form-label text-light">Description</label>
+                    <textarea 
+                      className="form-control" 
+                      id="description" 
+                      name="description" 
+                      value={note.description} 
+                      onChange={onChange} 
+                      minLength={5} 
+                      required 
+                  />
                 </div>
                 <div className="mb-3">
-                    <label htmlFor="tag" className="form-label">Tag</label>
+                    <label htmlFor="tag" className="form-label text-light">Tag</label>
                     <input type="text" className="form-control" id="tag" name="tag" value={note.tag} onChange={onChange} />
                 </div>
-
                 <button type="button" className="btn btn-primary" onClick={handleClick}>Add Note</button>
             </form>
         </div>

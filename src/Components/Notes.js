@@ -3,22 +3,23 @@ import noteContext from "../Context/noteContext";
 import Noteitem from './Noteitem';
 import AddNote from './AddNote';
 import { useNavigate } from 'react-router-dom';
-
 const Notes = () => {
     const context = useContext(noteContext);
     const { notes, getNotes, editNote } = context;
-    let navigate = useNavigate();
+    const navigate = useNavigate();
     useEffect(() => {
-        if(localStorage.getItem('token')){getNotes();}
-        else{navigate("/login")}
+        if(localStorage.getItem('token')){
+            getNotes();
+        }else{
+            navigate('/login');
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-    
+
     const ref = useRef(null);
     const refClose = useRef(null);
-    
-    const [note, setNote] = useState({id: "", etitle: "", edescription: "", etag: ""});
-    
+    const [note, setNote] = useState({ id: "", etitle: "", edescription: "", etag: "" });
+
     const updateNote = (currentNote) => {
         ref.current.click();
         setNote({
@@ -28,18 +29,14 @@ const Notes = () => {
             etag: currentNote.tag
         });
     };
-    
-    const handleClick = () => { 
-        if (note.etitle.length >= 5 && note.edescription.length >= 5) {
-            editNote(note.id, note.etitle, note.edescription, note.etag);
-            refClose.current.click();
-        } else {
-            alert("Title and Description should be at least 5 characters long.");
-        }
+
+    const handleClick = () => {
+        editNote(note.id, note.etitle, note.edescription, note.etag);
+        refClose.current.click();
     };
 
     const onChange = (e) => {
-        setNote({...note, [e.target.name]: e.target.value});
+        setNote({ ...note, [e.target.name]: e.target.value });
     };
 
     return (
@@ -63,7 +60,15 @@ const Notes = () => {
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="edescription" className="form-label">Description</label>
-                                    <input type="text" className="form-control" id="edescription" name="edescription" value={note.edescription} onChange={onChange} minLength={5} required />
+                                    <textarea 
+                                      className="form-control" 
+                                      id="edescription" 
+                                      name="edescription" 
+                                      value={note.edescription} 
+                                      onChange={onChange} 
+                                      minLength={5} 
+                                      required 
+                                  />
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="etag" className="form-label">Tag</label>
@@ -73,23 +78,23 @@ const Notes = () => {
                         </div>
                         <div className="modal-footer">
                             <button ref={refClose} type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button onClick={handleClick} type="button" className="btn btn-primary" disabled={!(note.etitle.length >= 5 && note.edescription.length >= 5)}>Update Note</button>
+                            <button disabled={note.etitle.length < 5 || note.edescription.length < 5} onClick={handleClick} type="button" className="btn btn-primary">Update Note</button>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div className="row my-3">
-                <h2>Your Notes</h2>
-                <div className="container mx-2"> 
-                    {notes.length === 0 && 'No notes to display'}
+                <h2 className='text-light text-center'>Your Notes</h2>
+                <div className="container mx-2 text-light text-center">
+                    {notes.length === 0 && <p>No notes to display</p>}
                 </div>
-                {notes.map((note) => {
-                    return <Noteitem key={note._id} updateNote={updateNote} note={note} />
-                })}
+                {notes.map((note) => (
+                    <Noteitem key={note._id} updateNote={updateNote} note={note} />
+                ))}
             </div>
         </>
-    )
-}
+    );
+};
 
 export default Notes;

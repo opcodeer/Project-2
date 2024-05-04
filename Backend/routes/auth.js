@@ -4,7 +4,7 @@ const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const fetchuser = require('../middleware/fetchuser');
+const fetchuser = require('../middleware/fetchUser');
 const JWT_SECRET = 'Gautamisagoodb$oy'; // Use a more secure secret key in production
 
 // ROUTE 1: Create a User using: POST "/api/auth/createuser". No login required
@@ -17,32 +17,32 @@ router.post('/createuser', [
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ success,errors: errors.array() });
+      return res.status(400).json({ success, errors: errors.array() });
     }
 
-    let user = await User.findOne({ email: req.body.email });
-    if (user) {
-      return res.status(400).json({ success,error: 'A user with this email already exists' });
-    }
+    const { email, name, password } = req.body;
+
+    let existingUser = await User.findOne({ email });
+    if (existingUser) return res.status(400).json({ message: 'User already exists.' });
 
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
-    user = await User.create({
-      name: req.body.name,
+    let newUser = await User.create({
+      name,
+      email,
       password: hashedPassword,
-      email: req.body.email,
     });
 
     const payload = {
       user: {
-        id: user.id,
+        id: newUser.id,
       },
     };
 
     const authtoken = jwt.sign(payload, JWT_SECRET);
     success = true;
-    res.json({ success,authtoken });
+    res.json({ success, authtoken });
   } catch (error) {
     console.error(error.message);
     res.status(500).send('Internal Server Error');
