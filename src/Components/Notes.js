@@ -3,6 +3,7 @@ import noteContext from "../Context/noteContext";
 import Noteitem from './Noteitem';
 import AddNote from './AddNote';
 import { useNavigate } from 'react-router-dom';
+
 const Notes = () => {
     const context = useContext(noteContext);
     const { notes, getNotes, editNote } = context;
@@ -36,7 +37,12 @@ const Notes = () => {
     };
 
     const onChange = (e) => {
-        setNote({ ...note, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setNote({ ...note, [name]: value });
+    };
+
+    const getCharacterCountRatio = (currentLength, maxLength) => {
+        return `${currentLength}/${maxLength}`;
     };
 
     return (
@@ -56,7 +62,18 @@ const Notes = () => {
                             <form className="my-3">
                                 <div className="mb-3">
                                     <label htmlFor="etitle" className="form-label">Title</label>
-                                    <input type="text" className="form-control" id="etitle" name="etitle" value={note.etitle} onChange={onChange} minLength={5} required />
+                                    <input 
+                                      type="text" 
+                                      className="form-control" 
+                                      id="etitle" 
+                                      name="etitle" 
+                                      value={note.etitle} 
+                                      onChange={onChange} 
+                                      minLength={5} 
+                                      maxLength={100} 
+                                      required 
+                                    />
+                                    <span>{getCharacterCountRatio(note.etitle.length, 100)} Characters</span>
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="edescription" className="form-label">Description</label>
@@ -67,18 +84,35 @@ const Notes = () => {
                                       value={note.edescription} 
                                       onChange={onChange} 
                                       minLength={5} 
+                                      maxLength={2000} 
                                       required 
-                                  />
+                                    />
+                                    <span>{getCharacterCountRatio(note.edescription.length, 2000)} Characters</span>
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="etag" className="form-label">Tag</label>
-                                    <input type="text" className="form-control" id="etag" name="etag" value={note.etag} onChange={onChange} />
+                                    <input 
+                                      type="text" 
+                                      className="form-control" 
+                                      id="etag" 
+                                      name="etag" 
+                                      value={note.etag} 
+                                      onChange={onChange} 
+                                      maxLength={10} 
+                                    />
+                                    <span>{getCharacterCountRatio(note.etag.length, 10)} Characters</span>
                                 </div>
                             </form>
                         </div>
                         <div className="modal-footer">
                             <button ref={refClose} type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button disabled={note.etitle.length < 5 || note.edescription.length < 5} onClick={handleClick} type="button" className="btn btn-primary">Update Note</button>
+                            <button 
+                              disabled={note.etitle.length < 5 || note.edescription.length < 5} 
+                              onClick={handleClick} 
+                              type="button" 
+                              className="btn btn-primary">
+                              Update Note
+                            </button>
                         </div>
                     </div>
                 </div>
