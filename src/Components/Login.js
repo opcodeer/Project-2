@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import toast from 'react-hot-toast';
 const Login = () => {
     const [credentials, setCredentials] = useState({ email: "", password: "" });
     const navigate = useNavigate();
@@ -20,12 +20,13 @@ const Login = () => {
             if (response.ok && json.success && json.authtoken) {
                 localStorage.setItem('token', json.authtoken);
                 navigate("/h");
+                toast.success("Login successful");
             } else {
-                alert('Invalid Credentials');
+                toast.error("Invalid credentials or an error occurred.");
             }
         } catch (error) {
             console.error("Error during login:", error);
-            alert("Invalid credentials or an error occurred.");
+            toast.error("Invalid credentials or an error occurred.");
         }
     }
 

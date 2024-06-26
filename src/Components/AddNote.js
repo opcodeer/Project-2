@@ -8,7 +8,7 @@ const AddNote = () => {
     const handleClick = (e) => {
         e.preventDefault();
         if (note.title.trim().length >= 5 && note.title.trim().length <= 100 && 
-            note.description.trim().length >= 5 && note.description.trim().length <= 2000 &&
+            note.description.trim().length >= 5 && note.description.trim().length <= 4000 &&
             note.tag.trim().length <= 10) {
             addNote(note.title, note.description, note.tag);
             setNote({ title: "", description: "", tag: "" });
@@ -57,10 +57,10 @@ const AddNote = () => {
                       value={note.description} 
                       onChange={onChange} 
                       minLength={5} 
-                      maxLength={2000} 
+                      maxLength={4000} 
                       required 
                     />
-                    <span className='text-light'>{getCharacterCountRatio(note.description.length, 2000)} Characters</span>
+                    <span className='text-light'>{getCharacterCountRatio(note.description.length, 4000)} Characters</span>
                 </div>
                 <div className="mb-3">
                     <label htmlFor="tag" className="form-label text-light">Tag</label>

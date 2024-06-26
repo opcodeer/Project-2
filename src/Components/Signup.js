@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from 'react-google-login';
 import { gapi } from 'gapi-script';
-
+import toast from 'react-hot-toast';
 const Signup = () => {
     const [credentials, setCredentials] = useState({ name: "", email: "", password: "", cpassword: "" });
     const [isVerified, setVerified] = useState(false);
@@ -39,11 +39,13 @@ const Signup = () => {
             if (json.success) {
                 localStorage.setItem('token', json.authtoken);
                 navigate("/h");
+                toast.success("Signup successful");
             } else {
-                alert("Invalid credentials");
+                toast.error("Invalid credentials or an error occurred.");
             }
         } catch (error) {
             console.error("Error during login:", error);
+            toast.error("Invalid credentials or an error occurred.");
         }
     }
 
@@ -71,6 +73,7 @@ const Signup = () => {
 
     const googleFailure = (error) => {
         console.error('Google authentication error:', error);
+        toast.error("Google authentication error: ",error.message);
     };
 
     return (

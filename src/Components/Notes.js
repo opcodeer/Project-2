@@ -84,10 +84,10 @@ const Notes = () => {
                                       value={note.edescription} 
                                       onChange={onChange} 
                                       minLength={5} 
-                                      maxLength={2000} 
+                                      maxLength={4000} 
                                       required 
                                     />
-                                    <span>{getCharacterCountRatio(note.edescription.length, 2000)} Characters</span>
+                                    <span>{getCharacterCountRatio(note.edescription.length, 4000)} Characters</span>
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="etag" className="form-label">Tag</label>

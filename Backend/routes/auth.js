@@ -1,11 +1,14 @@
-const express = require('express');
-const User = require('../models/User');
+import dotenv from 'dotenv';
+
+import express from 'express';
+import User from '../models/User.js';
+import { body, validationResult } from 'express-validator';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import fetchUser from '../middleware/fetchUser.js';
+dotenv.config();
+const JWT_SECRET = '4Bz3o5HW4rqw&%Kk@nDg9m6!tZsPb^Y';
 const router = express.Router();
-const { body, validationResult } = require('express-validator');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const fetchuser = require('../middleware/fetchUser');
-const JWT_SECRET = 'Gautamisagoodb$oy'; // Use a more secure secret key in production
 
 // ROUTE 1: Create a User using: POST "/api/auth/createuser". No login required
 router.post('/createuser', [
@@ -58,14 +61,14 @@ router.post('/login', [
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ success,errors: errors.array() });
+      return res.status(400).json({ success, errors: errors.array() });
     }
 
     const { email, password } = req.body;
     const user = await User.findOne({ email });
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(400).json({ success,error: 'Invalid credentials' });
+      return res.status(400).json({ success, error: 'Invalid credentials' });
     }
 
     const payload = {
@@ -76,7 +79,7 @@ router.post('/login', [
 
     const authtoken = jwt.sign(payload, JWT_SECRET);
     success = true;
-    res.json({ success,authtoken });
+    res.json({ success, authtoken });
   } catch (error) {
     console.error(error.message);
     res.status(500).send('Internal Server Error');
@@ -84,7 +87,7 @@ router.post('/login', [
 });
 
 // ROUTE 3: Get logged-in User Details using: POST "/api/auth/getuser". Login required
-router.post('/getuser', fetchuser, async (req, res) => {
+router.post('/getuser', fetchUser, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
     res.json(user);
@@ -94,4 +97,4 @@ router.post('/getuser', fetchuser, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;
