@@ -3,13 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from 'react-google-login';
 import { gapi } from 'gapi-script';
 import toast from 'react-hot-toast';
+
 const Signup = () => {
     const [credentials, setCredentials] = useState({ name: "", email: "", password: "", cpassword: "" });
     const [isVerified, setVerified] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const navigate = useNavigate();
-    const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+    const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID || "140083932391-4846kjcp9bhv4ctbfto324cr4d8tnv53.apps.googleusercontent.com";
+    console.log(googleClientId);
     useEffect(() => {
         const start = async () => {
             try {
@@ -19,10 +21,11 @@ const Signup = () => {
                 });
             } catch (error) {
                 console.error('Error initializing Google API:', error);
+                toast.error("Error initializing Google API");
             }
         };
         gapi.load('client:auth2', start);
-    }, [googleClientId]); // Ensure useEffect runs when googleClientId changes
+    }, [googleClientId]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -44,36 +47,40 @@ const Signup = () => {
                 toast.error("Invalid credentials or an error occurred.");
             }
         } catch (error) {
-            console.error("Error during login:", error);
+            console.error("Error during signup:", error);
             toast.error("Invalid credentials or an error occurred.");
         }
-    }
+    };
 
-    const VerifySuccess = async (res) => {
-        const result = res?.profileObj;
-        const newEmail = result?.email;
-        setCredentials(prevCredentials => ({
-            ...prevCredentials,
-            email: newEmail
-        }));
-        setVerified(true);
+    const VerifySuccess = (response) => {
+        const profile = response.profileObj;
+        if (profile) {
+            setCredentials(prevCredentials => ({
+                ...prevCredentials,
+                email: profile.email
+            }));
+            setVerified(true);
+            toast.success("Google authentication successful");
+        } else {
+            toast.error("Failed to get profile information from Google");
+        }
     };
 
     const onChange = (e) => {
         setCredentials({ ...credentials, [e.target.name]: e.target.value });
-    }
+    };
 
     const toggleShowPassword = () => {
         setShowPassword(prevState => !prevState);
-    }
+    };
 
     const toggleShowConfirmPassword = () => {
         setShowConfirmPassword(prevState => !prevState);
-    }
+    };
 
     const googleFailure = (error) => {
         console.error('Google authentication error:', error);
-        toast.error("Google authentication error: ",error.message);
+        toast.error("Google authentication error: " + error.details);
     };
 
     return (
@@ -126,7 +133,7 @@ const Signup = () => {
                 />
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default Signup;
