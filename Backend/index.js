@@ -10,7 +10,10 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: '*', // Replace with your frontend domain
+  credentials: true
+}));
 app.use(express.json());
 
 const __dirname = path.resolve();
