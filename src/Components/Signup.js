@@ -41,7 +41,7 @@ const Signup = () => {
             const json = await response.json();
             if (json.success) {
                 localStorage.setItem('token', json.authtoken);
-                navigate("/h");
+                navigate("https://notehub-8fnl.onrender.com");
                 toast.success("Signup successful");
             } else {
                 toast.error("Invalid credentials or an error occurred.");
