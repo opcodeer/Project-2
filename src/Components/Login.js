@@ -20,7 +20,7 @@ const Login = () => {
 
             if (response.ok && json.success && json.authtoken) {
                 localStorage.setItem('token', json.authtoken);
-                navigate("/"); // Redirect to home page or another route within your frontend
+                navigate("https://notehub-8fnl.onrender.com"); // Redirect to home page or another route within your frontend
                 toast.success("Login successful");
             } else {
                 toast.error("Invalid credentials or an error occurred.");
