@@ -11,7 +11,7 @@ const Signup = () => {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const navigate = useNavigate();
     const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID || "140083932391-4846kjcp9bhv4ctbfto324cr4d8tnv53.apps.googleusercontent.com";
-    console.log(googleClientId);
+    
     useEffect(() => {
         const start = async () => {
             try {
@@ -31,6 +31,7 @@ const Signup = () => {
         e.preventDefault();
         const { name, email, password } = credentials;
         try {
+            console.log('Submitting:', { name, email, password });
             const response = await fetch("https://notehub-8fnl.onrender.com/api/auth/createuser", {
                 method: 'POST',
                 headers: {
@@ -38,7 +39,16 @@ const Signup = () => {
                 },
                 body: JSON.stringify({ name, email, password })
             });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Response error:', errorText);
+                toast.error("Invalid credentials or an error occurred.");
+                return;
+            }
+
             const json = await response.json();
+            console.log('Response:', json);
             if (json.success) {
                 localStorage.setItem('token', json.authtoken);
                 navigate("https://notehub-8fnl.onrender.com");
@@ -92,7 +102,7 @@ const Signup = () => {
                     <input type="text" className="form-control" id="name" name="name" onChange={onChange} aria-describedby="emailHelp" />
                 </div>
                 <div className="mb-3">
-                    <label htmlFor="email" className="form-label text-light">Get your email from google</label>
+                    <label htmlFor="email" className="form-label text-light">Get your email from Google</label>
                     <input type="email" className="form-control" id="email" name="email" value={credentials.email} readOnly aria-describedby="emailHelp" />
                 </div>
                 <div className="mb-3">
